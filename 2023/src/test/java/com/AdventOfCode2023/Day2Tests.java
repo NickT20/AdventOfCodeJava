@@ -19,4 +19,16 @@ class Day2Tests {
 		var day2 = new Day2();
 		Assert.assertEquals(2265, day2.ExecutePart1("/src/test/Inputs/Day2Input.txt", 12, 14, 13));
 	}
+
+	@Test
+	public void Test2() throws IOException {
+		var day2 = new Day2();
+		Assert.assertEquals(2286, day2.ExecutePart2("/src/test/Inputs/Day2Example.txt", 12, 14, 13));
+	}
+
+	@Test
+	public void Part2() throws IOException {
+		var day2 = new Day2();
+		Assert.assertEquals(64097, day2.ExecutePart2("/src/test/Inputs/Day2Input.txt", 12, 14, 13));
+	}
 }
