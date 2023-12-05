@@ -12,7 +12,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Day3 {
-    public int ExecutePart1(String file, int red, int blue, int green) throws IOException {
+    public int ExecutePart1(String file) throws IOException {
         var lines = new ArrayList<String>();
         try (BufferedReader br = new BufferedReader(new FileReader(System.getProperty("user.dir") + file))) {
             while (br.ready()) {
@@ -76,7 +76,7 @@ public class Day3 {
         return result;
     }
 
-    public int ExecutePart2(String file, int red, int blue, int green) throws IOException {
+    public int ExecutePart2(String file) throws IOException {
         var lines = new ArrayList<String>();
         try (BufferedReader br = new BufferedReader(new FileReader(System.getProperty("user.dir") + file))) {
             while (br.ready()) {
