@@ -75,6 +75,7 @@ public class Day4 {
             }
         return result;
     }
+
     public int ExecutePart2(String file) throws IOException {
         var lines = new ArrayList<String>();
         try (BufferedReader br = new BufferedReader(new FileReader(System.getProperty("user.dir") + file))) {
