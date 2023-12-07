@@ -53,7 +53,7 @@ public class Day6 {
         return multiplyArrayListValues(counts);
     }
 
-    public int ExecutePart2(String file) throws IOException {
+    public BigInteger ExecutePart2(String file) throws IOException {
         var lines = new ArrayList<String>();
         try (BufferedReader br = new BufferedReader(new FileReader(System.getProperty("user.dir") + file))) {
             while (br.ready()) {
@@ -78,15 +78,29 @@ public class Day6 {
             distance = BigInteger.valueOf(Long.parseLong(matcher.group()));
         }
 
-        var count = 0;
-        for (var i = BigInteger.ONE; i.compareTo(time) < 0; i.add(BigInteger.ONE)) {
-            var result = time.subtract(i).multiply(i);
-            if (distance.compareTo(result) < 0) {
-                count++;
+        var b = true;
+        var startingNumber = time.divide(BigInteger.valueOf(2));
+        while (b) {
+            var result = time.subtract(startingNumber).multiply(startingNumber);
+            if (distance.compareTo(result) > 0) {
+                b = false;
+                continue;
             }
+            startingNumber = startingNumber.subtract(BigInteger.ONE);
+        }
+        var first = startingNumber;
+        b = true;
+        startingNumber = time.divide(BigInteger.valueOf(2));
+        while (b) {
+            var result = time.subtract(startingNumber).multiply(startingNumber);
+            if (distance.compareTo(result) > 0) {
+                b = false;
+                continue;
+            }
+            startingNumber = startingNumber.add(BigInteger.ONE);
         }
 
-        return count;
+        return startingNumber.subtract(first).subtract(BigInteger.ONE);
     }
 
     private static int multiplyArrayListValues(ArrayList<Integer> integerList) {
