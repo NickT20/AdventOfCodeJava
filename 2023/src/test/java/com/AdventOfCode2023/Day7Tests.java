@@ -23,4 +23,20 @@ class Day7Tests {
 		var day7 = new Day7();
 		Assert.assertEquals(248569531, day7.ExecutePart1("/src/test/Inputs/Day7Input.txt"));
 	}
+
+	@Test
+	public void Test2() throws IOException {
+		var day7 = new Day7();
+		Assert.assertEquals(5905, day7.ExecutePart2("/src/test/Inputs/Day7Example.txt"));
+	}
+
+	@Test
+	public void Part2() throws IOException {
+		var day7 = new Day7();
+		// 251714835 too high
+		// 251056624 too high
+		// 250795764 too high
+
+		Assert.assertEquals(250382098, day7.ExecutePart2("/src/test/Inputs/Day7Input.txt"));
+	}
 }

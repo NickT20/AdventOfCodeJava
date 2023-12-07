@@ -167,36 +167,43 @@ public class Day7 {
                 }
             }
 
-            return Integer.compare(hand1.getHand().length(), hand2.getHand().length());
+            return -1;
         };
         var place = new AtomicInteger(1);
         var result = new AtomicInteger(0);
 
         none.stream().sorted(customComparator).toList().forEach(hand -> {
+            System.out.println(hand.getHand());
             result.addAndGet(hand.getBid() * place.get());
             place.getAndIncrement();
         });
         one.stream().sorted(customComparator).toList().forEach(hand -> {
+            System.out.println(hand.getHand());
             result.addAndGet(hand.getBid() * place.get());
             place.getAndIncrement();
         });
         two.stream().sorted(customComparator).toList().forEach(hand -> {
+            System.out.println(hand.getHand());
             result.addAndGet(hand.getBid() * place.get());
             place.getAndIncrement();
         });
         three.stream().sorted(customComparator).toList().forEach(hand -> {
+            System.out.println(hand.getHand());
             result.addAndGet(hand.getBid() * place.get());
             place.getAndIncrement();
         });
         fullHouse.stream().sorted(customComparator).toList().forEach(hand -> {
+            System.out.println(hand.getHand());
             result.addAndGet(hand.getBid() * place.get());
             place.getAndIncrement();
         });
         fourOfAKind.stream().sorted(customComparator).toList().forEach(hand -> {
+            System.out.println(hand.getHand());
             result.addAndGet(hand.getBid() * place.get());
             place.getAndIncrement();
         });
         fiveOfAKind.stream().sorted(customComparator).toList().forEach(hand -> {
+            System.out.println(hand.getHand());
             result.addAndGet(hand.getBid() * place.get());
             place.getAndIncrement();
         });
@@ -212,6 +219,31 @@ public class Day7 {
 
         public Integer getBid() {
             return this._bid;
+        }
+
+        public Integer getNumberOfWildCards() {
+            var count = 0;
+            for (int i = 0; i < 5; i++) {
+                if (_hand.charAt(i) == 'J') {
+                    count++;
+                }
+            }
+            return count;
+        }
+
+        public String getHandWithoutWildCards() {
+            StringBuilder result = new StringBuilder();
+
+            for (int i = 0; i < 5; i++) {
+                char currentChar = _hand.charAt(i);
+
+                // Only append characters that are not equal to the target character
+                if (currentChar != 'J') {
+                    result.append(currentChar);
+                }
+            }
+
+            return result.toString();
         }
 
         public Hand(String hand, Integer bid) {
@@ -262,42 +294,63 @@ public class Day7 {
         }
 
         public String getHandValue2() {
-            var charArray = _hand.toCharArray();
+            var charArray = getHandWithoutWildCards().toCharArray();
+            var wildCards = getNumberOfWildCards();
             Arrays.sort(charArray);
 
-            if (charArray[0] == charArray[4]) {
+            if (wildCards == 0) {
+                return getHandValue();
+            }
+
+            if (wildCards >= 4) {
                 return "Five of a kind";
             }
 
-            if (charArray[0] == charArray[3] || charArray[1] == charArray[4]) {
-                return "Four of a kind";
-            }
-
-            if (charArray[0] != charArray[1] && charArray[1] != charArray[2] && charArray[2] != charArray[3] && charArray[3] != charArray[4]) {
-                return "High card";
-            }
-
             var map = new HashMap<Character, Integer>();
-            for(var i = 0; i < 5; i++) {
+            for(var i = 0; i < charArray.length; i++) {
                 if (map.containsKey(charArray[i])) {
                     map.put(charArray[i], map.get(charArray[i]) + 1);
                 } else {
                     map.put(charArray[i], 1);
                 }
             }
-
             var values = new ArrayList<>(map.values());
             values.sort(Collections.reverseOrder());
 
-            if (values.get(0) == 3) {
-                if (values.size() == 2)
-                    return "Full house";
-                else
-                    return "Three of a kind";
+            if (wildCards == 3) {
+                if (values.size() == 1) {
+                    return "Five of a kind";
+                }
+                return "Four of a kind";
             }
 
-            if (values.get(0) == 2 && values.get(1) == 2) {
-                return "Two pair";
+            if (wildCards == 2) {
+                if (values.size() == 1) {
+                    return "Five of a kind";
+                }
+
+                if (values.size() == 2) {
+                    return "Four of a kind";
+                }
+
+                return "Three of a kind";
+            }
+
+            // else 1 wild card
+            if (values.size() == 1) {
+                return "Five of a kind";
+            }
+
+            if (values.size() == 2 && values.get(0) == 3) {
+                return "Four of a kind";
+            }
+
+            if (values.size() == 2 && values.get(0) == 2) {
+                return "Full house";
+            }
+
+            if (values.size() == 3) {
+                return "Three of a kind";
             }
 
             return "One pair";
