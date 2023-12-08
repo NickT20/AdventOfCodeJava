@@ -3,6 +3,7 @@ package com.AdventOfCode2023;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -45,7 +46,7 @@ public class Day8 {
         return steps;
     }
 
-    public int ExecutePart2(String file) throws IOException {
+    public BigInteger ExecutePart2(String file) throws IOException {
         var lines = new ArrayList<String>();
         try (BufferedReader br = new BufferedReader(new FileReader(System.getProperty("user.dir") + file))) {
             while (br.ready()) {
@@ -70,7 +71,6 @@ public class Day8 {
         }
 
         var steps = 0;
-        var found = false;
         var currentNodes = new ArrayList<Node>();
 
         for(var node: nodes.keySet()) {
@@ -79,22 +79,44 @@ public class Day8 {
             }
         }
 
-        while(!found) {
+        var foundLocations = new HashMap<String, Integer>();
+
+        while(foundLocations.size() != currentNodes.size()) {
             var step = queue.pop();
             queue.add(step);
-            found = true;
+
+            steps++;
 
             for(var i = 0; i < currentNodes.size(); i++) {
                 var node = step == 'L' ? nodes.get(currentNodes.get(i).Left) : nodes.get(currentNodes.get(i).Right);
-                if (found && !node.Name.endsWith("Z")) {
-                    found = false;
+                if (node.Name.endsWith("Z") && !foundLocations.containsKey(node.Name)) {
+                    foundLocations.put(node.Name, steps);
                 }
                 currentNodes.set(i, node);
             }
-            steps++;
         }
 
-        return steps;
+        return findLCM(new ArrayList<Integer>(foundLocations.values()));
+    }
+
+    // Least common denominator provided by ChatGPT
+    private static BigInteger findLCM(BigInteger a, BigInteger b) {
+        return a.multiply(b).divide(a.gcd(b));
+    }
+
+    // Function to find the LCM of an array of BigIntegers
+    public static BigInteger findLCM(ArrayList<Integer> numbers) {
+        if (numbers == null || numbers.isEmpty()) {
+            throw new IllegalArgumentException("Array cannot be null or empty");
+        }
+
+        BigInteger lcm = BigInteger.valueOf(numbers.get(0));
+
+        for (int i = 1; i < numbers.size(); i++) {
+            lcm = findLCM(lcm, BigInteger.valueOf(numbers.get(i)));
+        }
+
+        return lcm;
     }
 
     public class Node {
