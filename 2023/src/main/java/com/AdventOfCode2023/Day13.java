@@ -25,6 +25,60 @@ public class Day13 {
         return result;
     }
 
+    public long ExecutePart2(String file) throws IOException {
+        var rows = new ArrayList<String>();
+        var result = 0;
+        try (BufferedReader br = new BufferedReader(new FileReader(System.getProperty("user.dir") + file))) {
+            while (br.ready()) {
+                var line = br.readLine();
+                if (line.isEmpty()) {
+                    var outcome = -1;
+                    var count = 1;
+                    while (outcome == -1) {
+                        var row = count / rows.size();
+                        var column = count % rows.size() - 1;
+                        var r = rows.get(row);
+                        var temp = r.charAt(column);
+                        r = r.substring(0, column) + (temp == '#' ? '.' : '#') + r.substring(column + 1);
+                        rows.set(row, r);
+
+                        outcome = Calculate(rows);
+
+                        if (outcome == -1) {
+                            r = r.substring(0, column) + temp + r.substring(column + 1);
+                            rows.set(row, r);
+                        }
+                    }
+                    result += outcome;
+                    rows = new ArrayList<>();
+                } else {
+                    rows.add(line);
+                }
+            }
+        }
+
+        var outcome = -1;
+        var count = 1;
+        while (outcome == -1) {
+            var row = count / rows.size();
+            var column = count % rows.size() - 1;
+            var r = rows.get(row);
+            var temp = r.charAt(column);
+            r = r.substring(0, column) + (temp == '#' ? '.' : '#') + r.substring(column + 1);
+            rows.set(row, r);
+
+            outcome = Calculate(rows);
+
+            if (outcome == -1) {
+                r = r.substring(0, column) + temp + r.substring(column + 1);
+                rows.set(row, r);
+            }
+        }
+
+        result += outcome;
+        return result;
+    }
+
     private int Calculate(ArrayList<String> rows) {
         var columns = new ArrayList<String>();
         for(var x = 0; x < rows.get(0).length(); x++) {
@@ -34,9 +88,15 @@ public class Day13 {
             }
             columns.add(sb.toString());
         }
-        var numberOfColumns = FindMirror(columns);
         var numberOfRows = FindMirror(rows);
-        return (numberOfRows * 100) + numberOfColumns;
+        if (numberOfRows > -1) {
+            return numberOfRows * 100;
+        }
+        var numberOfColumns = FindMirror(columns);
+        if (numberOfColumns > -1) {
+            return numberOfColumns;
+        }
+        return -1;
     }
 
     private int FindMirror(ArrayList<String> rows) {
@@ -63,6 +123,6 @@ public class Day13 {
             }
         }
 
-        return 0;
+        return -1;
     }
 }
