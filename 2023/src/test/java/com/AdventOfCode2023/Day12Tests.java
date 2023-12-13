@@ -30,6 +30,6 @@ class Day12Tests {
 	@Test
 	public void Part2() throws IOException {
 		var day12 = new Day12();
-		Assert.assertEquals(548241300348335, day12.ExecutePart2("/src/test/Inputs/Day12Input.txt"));
+		Assert.assertEquals(Long.parseLong("548241300348335"), day12.ExecutePart2("/src/test/Inputs/Day12Input.txt"));
 	}
 }

@@ -26,7 +26,7 @@ public class Day12 {
             results += Count(parts[0], groups);
         }
 
-        return results; // Because I'm calculating 1 -> 9 and 9 -> 1 for example
+        return results;
     }
 
     public long ExecutePart2(String file) throws IOException {
@@ -55,7 +55,7 @@ public class Day12 {
             results += Count(puzzle.toString(), groups);
         }
 
-        return results; // Because I'm calculating 1 -> 9 and 9 -> 1 for example
+        return results;
     }
 
     private long Count(String puzzle, List<Integer> groups) {
