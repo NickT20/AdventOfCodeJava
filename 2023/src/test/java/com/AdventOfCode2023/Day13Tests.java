@@ -23,6 +23,12 @@ class Day13Tests {
 	@Test
 	public void Test2() throws IOException {
 		var day13 = new Day13();
-		Assert.assertEquals(405, day13.ExecutePart2("/src/test/Inputs/Day13Example.txt"));
+		Assert.assertEquals(400, day13.ExecutePart2("/src/test/Inputs/Day13Example.txt"));
+	}
+
+	@Test
+	public void Part2() throws IOException {
+		var day13 = new Day13();
+		Assert.assertEquals(44615, day13.ExecutePart2("/src/test/Inputs/Day13Input.txt"));
 	}
 }
