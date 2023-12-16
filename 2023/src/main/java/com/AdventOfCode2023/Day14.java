@@ -3,10 +3,8 @@ package com.AdventOfCode2023;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Objects;
+import java.sql.Array;
+import java.util.*;
 
 public class Day14 {
     public long ExecutePart1(String file) throws IOException {
@@ -103,24 +101,45 @@ public class Day14 {
             }
         }
 
-        ShiftUp(roundRocks, cubeRocks);
-//        Print(roundRocks, row, cubeRocks, result);
-        roundRocks.sort(Comparator.comparingInt(Node::GetY).thenComparingInt(Node::GetX));
+        var previousValues = new HashMap<Integer, Integer>();
+        for (var x = 0; x < 1000; x++) {
+            roundRocks.sort(Comparator.comparingInt(Node::GetY).thenComparingInt(Node::GetX));
+            ShiftUp(roundRocks, cubeRocks);
 
-        ShiftLeft(roundRocks, cubeRocks);
-//        Print(roundRocks, row, cubeRocks, result);
-        roundRocks.sort(Comparator.comparingInt(Node::GetY).thenComparingInt(Node::GetX).reversed());
-        ShiftDown(roundRocks, cubeRocks, row - 1);
-        Print(roundRocks, row, cubeRocks, result);
-//        ShiftRight(roundRocks, cubeRocks, length - 1);
+            roundRocks.sort(Comparator.comparingInt(Node::GetY).thenComparingInt(Node::GetX));
+            ShiftLeft(roundRocks, cubeRocks);
 
-//        result = Print(roundRocks, row, cubeRocks, result);
+            roundRocks.sort(Comparator.comparingInt(Node::GetY).thenComparingInt(Node::GetX).reversed());
+            ShiftDown(roundRocks, cubeRocks, row - 1);
+
+            roundRocks.sort(Comparator.comparingInt(Node::GetY).thenComparingInt(Node::GetX).reversed());
+            ShiftRight(roundRocks, cubeRocks, length - 1);
+//            Print(roundRocks, row, cubeRocks, result);
+//            System.out.println();
+            var value = Print(roundRocks, row, cubeRocks);
+
+            if (x % 10 == 0) {
+                if (previousValues.containsKey(value)) {
+                    previousValues.put(value, previousValues.get(value) + 1);
+                } else {
+                    previousValues.put(value, 1);
+                }
+            }
+            System.out.println(Print(roundRocks, row, cubeRocks));
+        }
+//        var toCompare = previousValues.subList(90, 99);
+//        while(true) {
+//            System.arraycopy(previousValues, 0, previousValues, 1, previousValues.size() - 1);
+//        }
+
+        result = Print(roundRocks, row, cubeRocks);
 
         return result;
     }
 
-    private static int Print(ArrayList<Node> roundRocks, int row, ArrayList<Node> cubeRocks, int result) {
+    private static int Print(ArrayList<Node> roundRocks, int row, ArrayList<Node> cubeRocks) {
         var width = roundRocks.stream().max(Comparator.comparingInt(obj -> obj.X)).get().X + 1;
+        var result = 0;
         for (var y = 0; y < row; y++) {
             for (var x = 0; x < width; x++) {
                 var finalX = x;
@@ -130,16 +149,16 @@ public class Day14 {
                     rock1 = roundRocks.stream().filter(r -> r.Y == finalY && r.X == finalX).findFirst();
 
                     if (rock1.isEmpty()) {
-                        System.out.print('.');
+//                        System.out.print('.');
                     } else {
                         result += row - y;
-                        System.out.print('O');
+//                        System.out.print('O');
                     }
                 } else {
-                    System.out.print('#');
+//                    System.out.print('#');
                 }
             }
-            System.out.println();
+//            System.out.println();
         }
         return result;
     }
@@ -225,12 +244,12 @@ public class Day14 {
                     rock.X = foundRock.get().X - 1;
                 }
             } else {
-                var foundRock2 = roundRocks.stream().filter(r -> r.X < rock.X && r.Y == rock.Y).max(Comparator.comparingInt(obj -> obj.X));
+                var foundRock2 = roundRocks.stream().filter(r -> r.X > rock.X && r.Y == rock.Y).min(Comparator.comparingInt(obj -> obj.X));
 
                 if (foundRock2.isEmpty()) {
                     rock.X = foundRock.get().X - 1;
                 } else {
-                    rock.X = foundRock2.get().X > foundRock.get().X ?  foundRock2.get().X - 1 : foundRock.get().X - 1;
+                    rock.X = foundRock2.get().X < foundRock.get().X ?  foundRock2.get().X - 1 : foundRock.get().X - 1;
                 }
             }
         }
