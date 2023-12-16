@@ -58,6 +58,146 @@ public class Day16 {
         return _energized.size();
     }
 
+    public long ExecutePart2(String file) throws IOException {
+        var lines = new ArrayList<String>();
+        try (BufferedReader br = new BufferedReader(new FileReader(System.getProperty("user.dir") + file))) {
+            var row= 0;
+            while (br.ready()) {
+                var line = br.readLine();
+                lines.add(line);
+                for (var x = 0; x < line.length(); x++) {
+                    var character = line.charAt(x);
+                    switch (character) {
+                        case '-':
+                            _blocks.add(new Block(x, row, "LR", "U"));
+                            _blocks.add(new Block(x, row, "LR", "D"));
+                            break;
+                        case '|':
+                            _blocks.add(new Block(x, row, "UD", "L"));
+                            _blocks.add(new Block(x, row, "UD", "R"));
+                            break;
+                        case '/':
+                            _blocks.add(new Block(x, row, "D", "L"));
+                            _blocks.add(new Block(x, row, "L", "D"));
+                            _blocks.add(new Block(x, row, "R", "U"));
+                            _blocks.add(new Block(x, row, "U", "R"));
+                            break;
+                        case '\\':
+                            _blocks.add(new Block(x, row, "U", "L"));
+                            _blocks.add(new Block(x, row, "R", "D"));
+                            _blocks.add(new Block(x, row, "L", "U"));
+                            _blocks.add(new Block(x, row, "D", "R"));
+                            break;
+                    }
+                }
+                row++;
+                _yMax = row - 1;
+                _xMax = line.length() - 1;
+            }
+        }
+        var direction = "R";
+        _energized.add(getKey(0, 0));
+//        _history.add(getHistoryKey(0,0,"R"));
+
+        // Converted this to "D" for part one since my input actually start going down in the first block
+
+        var max = 0;
+        for (var x = 0; x < _xMax; x++) {
+            var block = lines.get(0).charAt(x);
+
+
+            switch (block) {
+                case '/':
+                    Move("L", x, 0);
+                    break;
+                case '\\':
+                    Move("R", x, 0);
+                    break;
+                case '-':
+                    Move("L", x, 0);
+                    Move("R", x, 0);
+                    break;
+                default:
+                    Move("D", x, 0);
+                    break;
+            }
+            if (_energized.size() > max) { max = _energized.size(); }
+            _energized = new HashSet<>();
+            _history = new HashSet<>();
+        }
+
+        for (var x = 0; x < _xMax; x++) {
+            var block = lines.get(0).charAt(x);
+
+            switch (block) {
+                case '/':
+                    Move("R", x, _yMax);
+                    break;
+                case '\\':
+                    Move("L", x, _yMax);
+                    break;
+                case '-':
+                    Move("L", x, _yMax);
+                    Move("R", x, _yMax);
+                    break;
+                default:
+                    Move("U", x, _yMax);
+                    break;
+            }
+            if (_energized.size() > max) { max = _energized.size(); }
+            _energized = new HashSet<>();
+            _history = new HashSet<>();
+        }
+
+        for (var y = 0; y < _yMax; y++) {
+            var block = lines.get(y).charAt(0);
+
+            switch (block) {
+                case '/':
+                    Move("U", 0, y);
+                    break;
+                case '\\':
+                    Move("D", 0, y);
+                    break;
+                case '|':
+                    Move("U", 0, y);
+                    Move("D", 0, y);
+                    break;
+                default:
+                    Move("R", 0, y);
+                    break;
+            }
+            if (_energized.size() > max) { max = _energized.size(); }
+            _energized = new HashSet<>();
+            _history = new HashSet<>();
+        }
+
+        for (var y = 0; y < _yMax; y++) {
+            var block = lines.get(y).charAt(_xMax);
+
+            switch (block) {
+                case '/':
+                    Move("D", _xMax, y);
+                    break;
+                case '\\':
+                    Move("U", _xMax, y);
+                    break;
+                case '|':
+                    Move("U", _xMax, y);
+                    Move("D", _xMax, y);
+                    break;
+                default:
+                    Move("L", _xMax, y);
+                    break;
+            }
+            if (_energized.size() > max) { max = _energized.size(); }
+            _energized = new HashSet<>();
+            _history = new HashSet<>();
+        }
+
+        return max;
+    }
+
     public void Move(String direction, int x, int y) {
         var finalX = x;
         var finalY = y;
