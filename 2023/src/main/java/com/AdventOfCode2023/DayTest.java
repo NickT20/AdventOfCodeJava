@@ -40,7 +40,7 @@ public class DayTest {
         public Node(String name, Integer edgeValue) {
             this.name = name;
             this.edgeValue = edgeValue;
-            this.shortestDirection = new Direction();
+            this.shortestDirection = new Direction(' ', 1);
         }
         
         public Integer getDistance() { return this.distance; }
@@ -117,7 +117,8 @@ public class DayTest {
             int x = Integer.parseInt(parts[0]);
             int y = Integer.parseInt(parts[1]);
             for (var adjacencyPair:currentNode.getAdjacentNodes().entrySet()) {
-                var direction = currentNode.getShortesDirection();
+                var d1 = currentNode.getShortesDirection();
+                var direction = new Direction(d1.getDirection(), d1.getCount());
                 Node adjacentNode = adjacencyPair.getKey();
                 Integer edgeWeight = adjacencyPair.getValue();
                 String[] adjParts = adjacentNode.getName().split("-");
@@ -143,7 +144,7 @@ public class DayTest {
                 }
 
                 if (direction.getDirection() == nextDirection) {
-                    if (direction.getCount() == 3) 
+                    if (direction.getCount() == 3)
                         continue;
                     direction.incrementCount();
                 } else {
@@ -196,14 +197,17 @@ public class DayTest {
     }
 
     public static class Direction {
-        public Direction() {}
         public char direction;
-        public Integer count = 1;
+
+        public Direction(char dir, int count) {
+            this.direction = dir;
+            this.count = count;
+        }
+        public int count = 1;
         public void setDirection(char d) { this.direction = d; count = 1; }
         public char getDirection() {
             return this.direction;
         }
-        public void setCount(Integer i){ this.count = i;}
         public Integer getCount() { return this.count; }
         public void incrementCount() { this.count++; }
     }
